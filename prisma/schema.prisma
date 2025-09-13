@@ -33,6 +33,14 @@ enum EventType {
   MULTI_DAY
 }
 
+enum TicketStatus {
+  VALID
+  USED
+  CANCELLED
+  REFUNDED
+  EXPIRED
+}
+
 model User {
   id String @id @default(cuid())
   name String
@@ -49,6 +57,7 @@ model User {
 
   accounts Account[]
   events Event[]
+  tickets Ticket[]
 }
 
 model Account {
@@ -91,4 +100,30 @@ model Event {
   @@index([organizerId])
   @@index([status])
   @@index([startDate])
+
+  tickets Ticket[]
+}
+
+model Ticket {
+  id String @id @default(cuid())
+  ticketNumber String @unique @default(cuid())
+  purchaseDate DateTime @default(now())
+  price Decimal @db.Decimal(10, 2)
+
+  eventId String
+  userId String
+
+  qrCode String @unique
+  qrSignature String
+  zkProofHash String
+
+  status TicketStatus @default(VALID)
+
+  event Event @relation(fields: [eventId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([eventId])
+  @@index([userId])
+  @@index([ticketNumber])
+  @@index([status])
 }
