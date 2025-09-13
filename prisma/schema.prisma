@@ -21,6 +21,18 @@ enum Provider {
   GITHUB
 }
 
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  CANCELLED
+  COMPLETED
+}
+
+enum EventType {
+  SINGLE_DAY
+  MULTI_DAY
+}
+
 model User {
   id String @id @default(cuid())
   name String
@@ -36,6 +48,7 @@ model User {
   role Role @default(CUSTOMER)
 
   accounts Account[]
+  events Event[]
 }
 
 model Account {
@@ -52,4 +65,30 @@ model Account {
 
   @@unique([provider, providerId])
   @@index([userId])
+}
+
+model Event {
+  id String @id @default(cuid())
+  title String
+  description String
+  venue String
+
+  startDate DateTime
+  endDate DateTime
+
+  price Decimal @db.Decimal(10, 2)
+  totalTickets Int
+  availableTickets Int
+
+  organizer User @relation(fields: [organizerId], references: [id])
+  organizerId String
+  status EventStatus
+  eventType EventType @default(SINGLE_DAY)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizerId])
+  @@index([status])
+  @@index([startDate])
 }
