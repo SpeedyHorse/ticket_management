@@ -126,4 +126,31 @@ model Ticket {
   @@index([userId])
   @@index([ticketNumber])
   @@index([status])
+
+  security TicketSecurity?
+}
+
+model QuestionTemplate {
+  id String @id @default(cuid())
+  question String
+  category String
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+
+  @@index([category])
+  @@index([isActive])
+}
+
+model TicketSecurity {
+  id String @id @default(cuid())
+  ticketId String @unique
+
+  selectedQuestionIds String
+
+  answersHash String
+  zkProofHash String
+
+  createdAt DateTime @default(now())
+
+  ticket Ticket @relation(fields: [ticketId], references: [id])
 }

@@ -28,6 +28,9 @@
 - [x] Provider（GOOGLE/GITHUB）
 - [x] EventStatus（DRAFT/PUBLISHED/CANCELLED/COMPLETED）
 - [x] EventType（SINGLE_DAY/MULTI_DAY）
+- [x] Ticket: チケット基本情報、QRコード、セキュリティ
+- [x] QuestionTemplate: セキュリティ質問テンプレート
+- [x] TicketSecurity: 質問・回答システム
 
 4. 設計方針決定
 
@@ -40,8 +43,5 @@
 
 1. 残りのデータベースモデル
 
-- Ticket: チケット基本情報、QRコード、セキュリティ
 - Purchase: 購入記録、決済情報
-- QuestionTemplate: セキュリティ質問テンプレート
-- TicketSecurity: 質問・回答システム
 - TicketVerification: 入場時検証記録
