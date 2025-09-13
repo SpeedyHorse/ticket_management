@@ -85,7 +85,7 @@ model Event {
   startDate DateTime
   endDate DateTime
 
-  price Decimal @db.Decimal(10, 2)
+  price Decimal
   totalTickets Int
   availableTickets Int
 
@@ -108,7 +108,7 @@ model Ticket {
   id String @id @default(cuid())
   ticketNumber String @unique @default(cuid())
   purchaseDate DateTime @default(now())
-  price Decimal @db.Decimal(10, 2)
+  price Decimal
 
   eventId String
   userId String
