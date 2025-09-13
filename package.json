@@ -10,17 +10,21 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^2.10.0",
     "@nuxt/image": "1.11.0",
     "@nuxt/test-utils": "3.19.2",
     "@nuxt/ui": "3.3.3",
     "@prisma/client": "6.16.1",
     "@prisma/nuxt": "^0.3.0",
+    "@sidebase/nuxt-auth": "1.0.2",
+    "next-auth": "4.21.1",
     "nuxt": "^4.1.1",
     "typescript": "^5.9.2",
     "vue": "^3.5.21",
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
+    "@types/node": "^24.3.3",
     "prisma": "6.16.1"
   },
   "pnpm": {
