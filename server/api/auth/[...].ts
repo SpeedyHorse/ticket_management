@@ -1,5 +1,27 @@
 import GithubProvider from 'next-auth/providers/github';
 import { NuxtAuthHandler } from '#auth';
+import { Provider } from '@prisma/client';
+import { findUserByProvider, createUser, findUserByEmail } from '@@/lib/db/user';
+
+
+async function signIn(info: any) {
+    const providerAccountId = info.account?.providerAccountId;
+    const provider = info.account?.provider == "github" ? Provider.GITHUB : Provider.GOOGLE;
+    const account = await findUserByProvider(provider, providerAccountId)
+    
+    if (account) {
+        return true
+    } else {
+        const user = await createUser(
+            info.user.name,
+            info.user.email,
+            provider,
+            providerAccountId
+        )
+        return user ? true : false
+    }
+}
+
 
 export default NuxtAuthHandler({
     secret: 'test',
@@ -12,7 +34,7 @@ export default NuxtAuthHandler({
     ],
     callbacks: {
         async signIn({ user, account, profile, email, credentials }) {
-            return true
+            return signIn({user, account, profile, email, credentials})
         },
         async redirect({ url, baseUrl }) {
             return baseUrl

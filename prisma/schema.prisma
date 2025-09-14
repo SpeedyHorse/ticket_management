@@ -53,6 +53,9 @@ model User {
   encryptedPrivateKey String? @unique
   walletCreated Boolean @default(false)
 
+  encryptionSalt String?
+  encryptionIv String?
+
   role Role @default(CUSTOMER)
 
   accounts Account[]
