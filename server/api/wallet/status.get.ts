@@ -5,9 +5,9 @@ export default defineEventHandler(async (event) => {
     const session = await getServerSession(event)
     if (!session || !session.user?.email) {
         event.node.res.statusCode = 401
-        return { created: false }
+        return { data: { created: false }, error: "Unauthorized" }
     }
 
     const user = await findUserByEmail(session.user.email)
-    return { created: user!.walletCreated }
+    return { data: { created: user!.walletCreated } }
 })
