@@ -2,7 +2,7 @@ import { Provider } from '@prisma/client';
 import prisma from '../prisma';
 
 export async function findUserByEmail(email: string) {
-    return prisma.user.findUnique({
+    return await prisma.user.findUnique({
         where: {
             email
         }
@@ -10,7 +10,7 @@ export async function findUserByEmail(email: string) {
 }
 
 export async function findUserByProvider(provider: Provider, providerId: string) {
-    const account = prisma.account.findUnique({
+    const account = await prisma.account.findUnique({
         where: {
             provider_providerId: {
                 provider,
@@ -18,13 +18,21 @@ export async function findUserByProvider(provider: Provider, providerId: string)
             }
         }
     })
+    console.error("[prisma] findUserByProvider", JSON.stringify(account))
     if (!account) {
         return null
     }
-    return account.user
+    const user = await prisma.user.findUnique({
+        where: {
+            id: account.userId
+        }
+    })
+    console.error("[prisma] findUserByProvider", JSON.stringify(user))
+    return user
 }
 
 export async function createUser(name: string, email: string, provider: Provider, providerId: string) {
+    console.log("[prisma] createUser", name, email, provider, providerId)
     return prisma.$transaction(async (tx) => {
         const user = await tx.user.create({
             data : {

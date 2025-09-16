@@ -9,6 +9,7 @@ async function signIn(info: any) {
     const provider = info.account?.provider == "github" ? Provider.GITHUB : Provider.GOOGLE;
     const account = await findUserByProvider(provider, providerAccountId)
     
+    console.error("[server] signIn", account ? "true" : "false")
     if (account) {
         return true
     } else {
