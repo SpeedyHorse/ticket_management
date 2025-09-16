@@ -1,3 +1,5 @@
+import { baseURL } from "process";
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
@@ -10,6 +12,7 @@ export default defineNuxtConfig({
     '@sidebase/nuxt-auth'
   ],
   auth: {
+    baseURL: process.env.BASE_URL,
     provider: {
       type: "authjs",
     },
