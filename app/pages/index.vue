@@ -27,5 +27,8 @@ onMounted(async () => {
         <button v-if="!walletStatus" @click="() => navigateTo('/createwallet')">
             create wallet
         </button>
+        <button @click="() => navigateTo('/dashboard')">
+            dashboard
+        </button>
     </div>
 </template>

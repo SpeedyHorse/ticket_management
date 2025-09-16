@@ -4,6 +4,7 @@ const whiteListPaths = [
 
 const authorizeListPaths = [
     "/api/wallet",
+    "/api/user",
 ]
 
 const roleListPaths = [
