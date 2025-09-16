@@ -10,4 +10,8 @@ export const useEvent = () => {
         console.log("res", res)
         return res
     }
+
+    return {
+        createEvent
+    }
 }
