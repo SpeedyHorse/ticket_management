@@ -11,7 +11,19 @@ export const useEvent = () => {
         return res
     }
 
+    const getEventsByOrganizerId = async (organizerId: string) => {
+        const res: { data: Event[] } = await $fetch(
+            "/api/events/info",
+            {
+                method: "GET",
+                query: { organizerId }
+            }
+        )
+        return res.data
+    }
+
     return {
-        createEvent
+        createEvent,
+        getEventsByOrganizerId
     }
 }

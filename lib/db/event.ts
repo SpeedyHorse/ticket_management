@@ -12,6 +12,12 @@ interface createEventParams {
     organizerId: string
 }
 
+interface getEventsByParamsParams {
+    id?: string,
+    organizerId?: string,
+    status?: EventStatus
+}
+
 export async function createEvent(event: createEventParams) {
     const startDate = new Date(event.startDate).toISOString()
     const endDate = new Date(event.endDate).toISOString()
@@ -37,3 +43,34 @@ export async function createEvent(event: createEventParams) {
     })
 }
 
+export async function getEvent(id: string) {
+    const event =  await prisma.event.findUnique({
+        where: { id }
+    })
+    if (!event) {
+        throw createError({
+            statusCode: 404,
+            statusMessage: "Event not found"
+        })
+    }
+    return event
+}
+
+export async function getEvents() {
+    const events = await prisma.event.findMany()
+    return events
+}
+
+export async function getEventsByOrganizerId(organizerId: string) {
+    const events = await prisma.event.findMany({
+        where: { organizerId }
+    })
+    return events
+}
+
+export async function getEventsByParams(params: getEventsByParamsParams) {
+    // const { id, organizerId, status } = params
+    return await prisma.event.findMany({
+        where: params
+    })
+}
