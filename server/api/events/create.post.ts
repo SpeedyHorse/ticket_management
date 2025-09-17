@@ -1,30 +1,30 @@
 import { createEvent } from "@@/lib/db/event"
+import { createEventSchema, validateEventData } from "@@/lib/validation/event"
 
 export default defineEventHandler(async (event) => {
-    const body = await readBody(event)
+    try {
+        const body = await readBody(event)
 
-    const {
-        title,
-        description,
-        venue,
-        startDate,
-        endDate,
-        price,
-        totalTickets
-    } = body
+        // バリデーション実行
+        const validatedData = validateEventData(body, createEventSchema)
 
-    const result_event = await createEvent({
-        title,
-        description,
-        venue,
-        startDate,
-        endDate,
-        price,
-        totalTickets,
-        organizerId: event.context.user.id
-    })
+        const result_event = await createEvent({
+            ...validatedData,
+            organizerId: event.context.user.id
+        })
 
-    return {
-        data: result_event
+        return {
+            success: true,
+            data: result_event
+        }
+    } catch (error: any) {
+        if (error.statusCode) {
+            throw error
+        }
+        
+        throw createError({
+            statusCode: 500,
+            statusMessage: error.message || "イベントの作成に失敗しました"
+        })
     }
 })

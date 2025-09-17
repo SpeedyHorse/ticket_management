@@ -1,57 +1,45 @@
 import { updateEvent, getEvent } from "@@/lib/db/event"
+import { updateEventSchema, validateEventData } from "@@/lib/validation/event"
 
 export default defineEventHandler(async (event) => {
-    const body = await readBody(event)
-    const query = getQuery(event)
-    
-    const eventId = query.id as string
-    if (!eventId) {
-        throw createError({
-            statusCode: 400,
-            statusMessage: "Event ID is required"
-        })
-    }
-
-    // Check if user owns this event
-    const existingEvent = await getEvent(eventId)
-    if (existingEvent.organizerId !== event.context.user.id) {
-        throw createError({
-            statusCode: 403,
-            statusMessage: "You can only edit your own events"
-        })
-    }
-
-    const {
-        title,
-        description,
-        venue,
-        startDate,
-        endDate,
-        price,
-        totalTickets,
-        status
-    } = body
-
     try {
-        const updatedEvent = await updateEvent(eventId, {
-            title,
-            description,
-            venue,
-            startDate,
-            endDate,
-            price,
-            totalTickets,
-            status
-        })
+        const body = await readBody(event)
+        const query = getQuery(event)
+        
+        const eventId = query.id as string
+        if (!eventId) {
+            throw createError({
+                statusCode: 400,
+                statusMessage: "イベントIDが必要です"
+            })
+        }
+
+        // バリデーション実行
+        const validatedData = validateEventData(body, updateEventSchema)
+
+        // Check if user owns this event
+        const existingEvent = await getEvent(eventId)
+        if (existingEvent.organizerId !== event.context.user.id) {
+            throw createError({
+                statusCode: 403,
+                statusMessage: "自分のイベントのみ編集できます"
+            })
+        }
+
+        const updatedEvent = await updateEvent(eventId, validatedData)
 
         return {
             success: true,
             data: updatedEvent
         }
     } catch (error: any) {
+        if (error.statusCode) {
+            throw error
+        }
+        
         throw createError({
-            statusCode: 400,
-            statusMessage: error.message
+            statusCode: 500,
+            statusMessage: error.message || "イベントの更新に失敗しました"
         })
     }
 })
