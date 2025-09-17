@@ -42,7 +42,7 @@ enum TicketStatus {
 }
 
 model User {
-  id String @id @default(cuid())
+  id String @id @default(nanoid())
   name String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -64,7 +64,7 @@ model User {
 }
 
 model Account {
-  id String @id @default(cuid())
+  id String @id @default(nanoid())
 
   provider Provider
   providerId String
@@ -80,7 +80,7 @@ model Account {
 }
 
 model Event {
-  id String @id @default(cuid())
+  id String @id @default(nanoid())
   title String
   description String
   venue String
@@ -108,8 +108,8 @@ model Event {
 }
 
 model Ticket {
-  id String @id @default(cuid())
-  ticketNumber String @unique @default(cuid())
+  id String @id @default(nanoid())
+  ticketNumber String @unique @default(nanoid())
   purchaseDate DateTime @default(now())
   price Decimal
 
@@ -134,7 +134,7 @@ model Ticket {
 }
 
 model QuestionTemplate {
-  id String @id @default(cuid())
+  id String @id @default(nanoid())
   question String
   category String
   isActive Boolean @default(true)
@@ -145,7 +145,7 @@ model QuestionTemplate {
 }
 
 model TicketSecurity {
-  id String @id @default(cuid())
+  id String @id @default(nanoid())
   ticketId String @unique
 
   selectedQuestionIds String

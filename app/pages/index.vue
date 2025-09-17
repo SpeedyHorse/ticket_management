@@ -89,6 +89,7 @@ const { data: eventsResponse, pending, error, refresh } = await useFetch('/api/e
 })
 
 const events = computed(() => eventsResponse.value?.data || [])
+console.log(events.value)
 
 // SEO設定
 useSeoMeta({

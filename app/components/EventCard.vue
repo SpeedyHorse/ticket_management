@@ -63,9 +63,10 @@
           売り切れ
         </UButton>
 
-        <UButton variant="outline" size="sm" @click.stop="viewDetails">
+        <UButton v-bind:to="`/events/${event.id}`" variant="outline" size="sm">
           詳細
         </UButton>
+        <p>{{ event.id }}</p>
       </div>
     </div>
   </div>
@@ -145,7 +146,7 @@ function formatPrice(price: number | string) {
 
 // チケット購入処理
 function purchaseTicket() {
-  router.push(`/purchase/${props.event.id}`)
+  router.push(`/events/${props.event.id}/purchase`)
 }
 
 // 詳細表示処理

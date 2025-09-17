@@ -120,14 +120,7 @@ const eventId = route.params.id as string
 console.log('Frontend eventId:', eventId, 'Route params:', route.params)
 
 // イベントデータの取得
-const { data: eventResponse, pending, error, refresh } = await useFetch(`/api/events/${eventId}`, {
-  onRequest({ request }) {
-    console.log('Making request to:', request)
-  },
-  onRequestError({ error }) {
-    console.error('Request error:', error)
-  }
-})
+const { data: eventResponse, pending, error, refresh } = await useFetch(`/api/events/${eventId}`)
 
 const event = computed(() => eventResponse.value?.data)
 
@@ -183,7 +176,7 @@ function purchaseTicket() {
     return
   }
 
-  router.push(`/purchase/${eventId}`)
+  router.push(`/events/${eventId}/purchase`)
 }
 
 // 戻る処理
