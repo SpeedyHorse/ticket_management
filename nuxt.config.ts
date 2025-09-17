@@ -12,7 +12,7 @@ export default defineNuxtConfig({
     '@sidebase/nuxt-auth'
   ],
   auth: {
-    baseURL: process.env.BASE_URL,
+    // baseURL: process.env.BASE_URL,
     provider: {
       type: "authjs",
     },

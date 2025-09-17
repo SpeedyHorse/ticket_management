@@ -17,12 +17,12 @@ export default defineEventHandler(async (event) => {
     if (existingEvent.organizerId !== event.context.user.id) {
         throw createError({
             statusCode: 403,
-            statusMessage: "You can only unpublish your own events"
+            statusMessage: "You can only publish your own events"
         })
     }
 
     try {
-        const updatedEvent = await updateEventStatus(eventId, EventStatus.DRAFT)
+        const updatedEvent = await updateEventStatus(eventId, EventStatus.PUBLISHED)
 
         return {
             success: true,
