@@ -1,7 +1,7 @@
 import Joi from 'joi'
 import { PrismaClient, TicketStatus } from '@prisma/client'
 import { nanoid } from 'nanoid'
-import { generateQRCode, generateQRSignature, generateZKProofHash } from '~/utils/zk'
+// import { generateQRCode, generateQRSignature, generateZKProofHash } from '~/utils/zk'
 
 const prisma = new PrismaClient()
 
@@ -66,9 +66,9 @@ export default defineEventHandler(async (event) => {
             ticketNumber: nanoid(),
             purchaseDate: new Date(),
             price: eventData.price,
-            qrCode: generateQRCode(),
-            qrSignature: generateQRSignature(),
-            zkProofHash: generateZKProofHash(),
+            // qrCode: generateQRCode(),
+            // qrSignature: generateQRSignature(),
+            // zkProofHash: generateZKProofHash(),
             status: TicketStatus.VALID
           }
         })
@@ -88,6 +88,7 @@ export default defineEventHandler(async (event) => {
     if (error.statusCode) {
       throw error
     }
+    console.error(error)
     
     throw createError({
       statusCode: 500,

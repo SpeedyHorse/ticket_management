@@ -63,10 +63,13 @@
           売り切れ
         </UButton>
 
-        <UButton v-bind:to="`/events/${event.id}`" variant="outline" size="sm">
+        <NuxtLink 
+          :to="`/events/${event.id}`"
+          class="border border-gray-300 text-gray-700 py-1 px-3 rounded text-sm hover:bg-gray-50"
+          @click.stop
+        >
           詳細
-        </UButton>
-        <p>{{ event.id }}</p>
+        </NuxtLink>
       </div>
     </div>
   </div>

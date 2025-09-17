@@ -6,6 +6,8 @@ export default defineEventHandler(async (event) => {
 
     try {
         let events
+        console.log("organizerId", organizerId)
+        console.log("published", published)
 
         if (organizerId) {
             // Get events by organizer (for admin dashboard)

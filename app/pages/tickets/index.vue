@@ -24,8 +24,8 @@
       >
         <div class="mb-4">
           <h3 class="text-lg font-semibold">{{ ticket.event.name }}</h3>
-          <p class="text-gray-600">{{ formatDate(ticket.event.date) }}</p>
-          <p class="text-gray-600">{{ ticket.event.location }}</p>
+          <p class="text-gray-600">{{ formatDate(ticket.event.startDate) }}</p>
+          <p class="text-gray-600">{{ ticket.event.venue }}</p>
         </div>
 
         <div class="mb-4">
@@ -49,6 +49,12 @@
           >
             QRコード表示
           </button>
+          <NuxtLink 
+            :to="`/tickets/${ticket.id}`"
+            class="flex-1 bg-green-600 text-white py-2 px-3 rounded-md hover:bg-green-700 text-sm text-center"
+          >
+            詳細表示
+          </NuxtLink>
           <button 
             @click="downloadTicket(ticket)"
             class="flex-1 bg-gray-600 text-white py-2 px-3 rounded-md hover:bg-gray-700 text-sm"
@@ -84,6 +90,7 @@
 
 <script setup>
 import QRCode from 'qrcode'
+const { getUser } = useUser()
 
 const tickets = ref([])
 const loading = ref(true)
@@ -91,11 +98,13 @@ const showQRModal = ref(false)
 const qrCanvas = ref(null)
 const selectedTicket = ref(null)
 
+const user = ref(await getUser())
+
 // チケット一覧取得
 const fetchTickets = async () => {
   try {
     const response = await $fetch('/api/tickets/my', {
-      query: { email: 'user@example.com' } // 実際は認証から取得
+      query: { id: user.value.id } // 実際は認証から取得
     })
     tickets.value = response.tickets
   } catch (error) {
@@ -139,18 +148,37 @@ const generateQR = async (ticket) => {
   
   await nextTick()
   
-  if (qrCanvas.value) {
-    const qrData = JSON.stringify({
-      ticketId: ticket.id,
-      ticketNumber: ticket.ticketNumber,
-      eventId: ticket.eventId,
-      timestamp: Date.now()
-    })
+  try {
+    // サーバーからセキュアなQRコードを取得
+    const response = await $fetch(`/api/tickets/${ticket.id}/qr`)
     
-    await QRCode.toCanvas(qrCanvas.value, qrData, {
-      width: 200,
-      margin: 2
-    })
+    if (qrCanvas.value && response.qrCode) {
+      // DataURLから画像を作成してcanvasに描画
+      const img = new Image()
+      img.onload = () => {
+        const ctx = qrCanvas.value.getContext('2d')
+        qrCanvas.value.width = 200
+        qrCanvas.value.height = 200
+        ctx.drawImage(img, 0, 0, 200, 200)
+      }
+      img.src = response.qrCode
+    }
+  } catch (error) {
+    console.error('QRコード生成エラー:', error)
+    // フォールバック: 基本的なQRコードを生成
+    if (qrCanvas.value) {
+      const qrData = JSON.stringify({
+        ticketId: ticket.id,
+        ticketNumber: ticket.ticketNumber,
+        eventId: ticket.eventId,
+        timestamp: Date.now()
+      })
+      
+      await QRCode.toCanvas(qrCanvas.value, qrData, {
+        width: 200,
+        margin: 2
+      })
+    }
   }
 }
 
@@ -164,8 +192,8 @@ const downloadTicket = (ticket) => {
   console.log('チケットダウンロード:', ticket.ticketNumber)
 }
 
-onMounted(() => {
-  fetchTickets()
+onMounted(async () => {
+  await fetchTickets()
 })
 
 useHead({

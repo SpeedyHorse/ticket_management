@@ -1,39 +1,82 @@
 <template>
     <div class="min-h-screen bg-gray-50">
-        <!-- ヘッダー -->
-        <header class="bg-white shadow-sm">
-            <div class="container mx-auto px-4 py-4">
-                <div class="flex justify-between items-center">
-                    <h1 class="text-2xl font-bold text-primary">チケット管理システム</h1>
-
-                    <div class="flex items-center gap-4">
-                        <div v-if="status === 'authenticated'" class="flex items-center gap-4">
-                            <span class="text-sm text-gray-600">こんにちは、{{ data?.user?.name }}さん</span>
-                            <UButton variant="outline" size="sm" @click="navigateTo('/admin/dashboard')">
-                                ダッシュボード
-                            </UButton>
-                            <UButton variant="ghost" size="sm" @click="() => signOut()">
-                                ログアウト
-                            </UButton>
-                        </div>
-                        <UButton v-else @click="signIn('github')">
-                            ログイン
-                        </UButton>
-                    </div>
+        <!-- ヒーローセクション -->
+        <section class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
+            <div class="container mx-auto px-4 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                    セキュアなチケット管理システム
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 opacity-90">
+                    ブロックチェーン技術とゼロ知識証明で、安全で透明なチケット販売を実現
+                </p>
+                <div class="space-x-4">
+                    <NuxtLink 
+                        to="/events"
+                        class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+                    >
+                        イベントを探す
+                    </NuxtLink>
+                    <NuxtLink 
+                        to="/tickets"
+                        class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
+                    >
+                        マイチケット
+                    </NuxtLink>
                 </div>
             </div>
-        </header>
+        </section>
 
         <!-- メインコンテンツ -->
         <main class="container mx-auto px-4 py-8">
-            <!-- ヒーローセクション -->
-            <div class="text-center mb-12">
-                <h2 class="text-4xl font-bold text-gray-900 mb-4">
-                    イベントを見つけよう
-                </h2>
-                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                    様々なイベントのチケットを簡単に購入できます。お気に入りのイベントを見つけて、素晴らしい体験をお楽しみください。
-                </p>
+            <!-- 特徴セクション -->
+            <section class="py-16 bg-white">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold mb-4">システムの特徴</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto">
+                        最新の暗号技術を活用した、安全で使いやすいチケット管理システムです。
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                    <!-- セキュリティ -->
+                    <div class="text-center p-6">
+                        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <UIcon name="i-heroicons-shield-check" class="text-2xl text-blue-600" />
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">高度なセキュリティ</h3>
+                        <p class="text-gray-600">
+                            ゼロ知識証明とブロックチェーン技術により、プライバシーを保護しながら安全な認証を実現
+                        </p>
+                    </div>
+
+                    <!-- 使いやすさ -->
+                    <div class="text-center p-6">
+                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <UIcon name="i-heroicons-device-phone-mobile" class="text-2xl text-green-600" />
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">簡単操作</h3>
+                        <p class="text-gray-600">
+                            直感的なUIとQRコードスキャンにより、誰でも簡単にチケットの購入・管理が可能
+                        </p>
+                    </div>
+
+                    <!-- 透明性 -->
+                    <div class="text-center p-6">
+                        <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <UIcon name="i-heroicons-eye" class="text-2xl text-purple-600" />
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">完全な透明性</h3>
+                        <p class="text-gray-600">
+                            すべての取引が記録され、チケットの真正性と履歴を完全に追跡可能
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 注目のイベント -->
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold mb-4">注目のイベント</h2>
+                <p class="text-gray-600">開催予定の人気イベントをチェック</p>
             </div>
 
             <!-- イベント一覧 -->
@@ -65,16 +108,43 @@
                     新しいイベントが追加されるまでお待ちください。
                 </p>
             </div>
+
+            <div class="text-center mt-8">
+                <NuxtLink 
+                    to="/events"
+                    class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                    すべてのイベントを見る
+                </NuxtLink>
+            </div>
         </main>
 
-        <!-- フッター -->
-        <footer class="bg-white border-t mt-16">
-            <div class="container mx-auto px-4 py-8">
-                <div class="text-center text-gray-600">
-                    <p>&copy; 2024 チケット管理システム. All rights reserved.</p>
+        <!-- CTA セクション -->
+        <section class="py-16 bg-blue-600 text-white">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl font-bold mb-4">今すぐ始めよう</h2>
+                <p class="text-xl mb-8 opacity-90">
+                    安全で便利なチケット管理システムを体験してください
+                </p>
+                <div class="space-x-4">
+                    <UButton 
+                        v-if="status !== 'authenticated'"
+                        @click="signIn('github')"
+                        color="white"
+                        size="lg"
+                    >
+                        アカウント作成
+                    </UButton>
+                    <NuxtLink 
+                        v-else
+                        to="/admin/dashboard"
+                        class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+                    >
+                        ダッシュボードへ
+                    </NuxtLink>
                 </div>
             </div>
-        </footer>
+        </section>
     </div>
 </template>
 

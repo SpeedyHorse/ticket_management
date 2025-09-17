@@ -9,30 +9,23 @@ const querySchema = Joi.object({
 
 export default defineEventHandler(async (event) => {
     try {
-        const query = getQuery(event)
-        const { error, value } = querySchema.validate(query)
-        if (error) {
-            throw createError({
-                statusCode: 400,
-                statusMessage: error.details[0].message
-            })
-        }
-        const { email } = value
+        const id = event.context.user.id
 
         const tickets = await prisma.ticket.findMany({
-            where: { userEmail: email },
+            where: { userId: id },
             include: {
                 event: {
                     select: {
                         id: true,
-                        name: true,
-                        date: true,
-                        location: true,
+                        title: true,
+                        startDate: true,
+                        endDate: true,
+                        venue: true,
                         price: true
                     }
                 }
             },
-            orderBy: { createdAt: 'desc' }
+            orderBy: { purchaseDate: 'desc' }
         })
 
         return {

@@ -4,33 +4,7 @@ import { secp256k1 } from "@noble/curves/secp256k1";
 import { keccak_256 } from "@noble/hashes/sha3";
 import { scrypt } from "@noble/hashes/scrypt";
 import { randomBytes } from "@noble/ciphers/utils";
-
-function bytesToPreserve(uint8Array: Uint8Array) {
-    // convert uint8Array to Base64
-    const base64 = btoa(String.fromCharCode(...uint8Array))
-
-    // replace + with -
-    // replace / with _
-    // replace = with .
-    return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, ".")
-}
-
-function preserveToBytes(preserve: string) {
-    // replace - with +
-    // replace _ with /
-    // replace . with =
-    const base64 = preserve.replace(/-/g, "+").replace(/_/g, "/").replace(/\./g, "=")
-    // convert base64 to Uint8Array
-    return Uint8Array.from(atob(base64), c => c.charCodeAt(0))
-}
-
-function bytesToHex(uint8Array: Uint8Array) {
-    return Array.from(uint8Array).map(v => v.toString(16).padStart(2, "0")).join("")
-}
-
-function convertUint8ArrayToString(uint8Array: Uint8Array) {
-    return Array.from(uint8Array).map(v => v.toString(16)).join("")
-}
+import { bytesToPreserve, bytesToHex } from "../byte";
 
 async function encryptPrivateKey(privateKey: Uint8Array, password: string) {
     const salt = randomBytes(16)

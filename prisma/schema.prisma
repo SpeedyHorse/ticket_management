@@ -116,9 +116,9 @@ model Ticket {
   eventId String
   userId String
 
-  qrCode String @unique
-  qrSignature String
-  zkProofHash String
+  qrCode String?
+  qrSignature String?
+  zkProofHash String?
 
   status TicketStatus @default(VALID)
 

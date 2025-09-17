@@ -1,16 +1,22 @@
 const whiteListPaths = [
     "/api/auth",
-    "/api/events/info"
+    "/api/events/info",
+    "/api/events"
 ]
 
 const authorizeListPaths = [
     "/api/wallet",
     "/api/user",
+    "/api/tickets/purchase",
+    "/api/tickets/my",
 ]
 
 const roleListPaths = [
-    "/api/events/create",
-    "/api/events/delete",
+    "/api/admin/events/create",
+    "/api/admin/events/delete",
+    "/api/admin/events/publish",
+    "/api/admin/events/unpublish",
+    "/api/admin/events/save",
 ]
 
 export default defineEventHandler(async (event) => {
