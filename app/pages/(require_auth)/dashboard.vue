@@ -25,17 +25,23 @@ onMounted(async () => {
             <p>Loading...</p>
         </div>
         <div v-else>
-            <div v-if="role == Role.ORGANIZER">
+            <div>{{ role }}:{{ role === Role.CUSTOMER }}</div>
+            <div v-if="role === Role.ORGANIZER">
                 <p>Organizer</p>
                 <OrgDashboard />
             </div>
-            <div v-else-if="role == Role.STAFF">
+            <div v-else-if="role === Role.ADMIN">
+                <p>Admin</p>
+                <OrgDashboard />
+            </div>
+            <div v-else-if="role === Role.STAFF">
                 <p>Staff</p>
             </div>
-            <div v-else>
+            <div v-else-if="role === Role.CUSTOMER">
                 <p>Customer</p>
                 <CusDashboard />
             </div>
+            <OrgDashboard />
         </div>
     </div>
 </template>

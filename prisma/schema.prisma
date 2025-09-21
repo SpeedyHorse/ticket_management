@@ -14,6 +14,7 @@ enum Role {
   CUSTOMER
   ORGANIZER
   STAFF
+  ADMIN
 }
 
 enum Provider {

@@ -18,6 +18,16 @@ interface getEventsByParamsParams {
     status?: EventStatus
 }
 
+interface updateEventParams {
+    title?: string,
+    description?: string,
+    venue?: string,
+    startDate?: string,
+    endDate?: string,
+    price?: number,
+    totalTickets?: number,
+}
+
 export async function createEvent(event: createEventParams) {
     const startDate = new Date(event.startDate).toISOString()
     const endDate = new Date(event.endDate).toISOString()
@@ -72,5 +82,18 @@ export async function getEventsByParams(params: getEventsByParamsParams) {
     // const { id, organizerId, status } = params
     return await prisma.event.findMany({
         where: params
+    })
+}
+
+export async function updateEvent(id: string, event: updateEventParams) {
+    return await prisma.event.update({
+        where: { id },
+        data: event
+    })
+}
+
+export async function deleteEvent(id: string) {
+    return await prisma.event.delete({
+        where: { id }
     })
 }

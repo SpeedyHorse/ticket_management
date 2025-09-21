@@ -1,17 +1,33 @@
 <script setup lang="ts">
 import Joi from "joi";
 import type { FormSubmitEvent } from '@nuxt/ui';
-import type { User } from "@prisma/client";
+import type { User, Event as EventType } from "@prisma/client";
+
+interface Props {
+    event?: EventType | null
+    type: 'create' | 'update'
+}
 
 const { getUser } = useUser()
-const { createEvent } = useEvent()
+const { createEvent, updateEvent } = useEvent()
 
 const user = ref<User | null>(null)
+const mode = ref<'create' | 'update'>('create')
 
+// 日付フォーマット関数
+function formatDateForInput(date: string | Date): string {
+  const d = new Date(date)
+  const returnDate = d.toISOString().split('T')[0]
+  if (!returnDate) {
+    throw new Error("Failed to format date")
+  }
+  return returnDate
+}
 
 onMounted(async () => {
     user.value = await getUser()
     console.log("user", user.value)
+    mode.value = props.type
 })
 
 const schema = Joi.object({
@@ -24,12 +40,30 @@ const schema = Joi.object({
     totalTickets: Joi.number().required(),
 })
 
-const state = reactive({
+const props = withDefaults(
+    defineProps<Props>(),
+    {
+        event: null,
+        type: 'create'
+    }
+)
+
+console.log("props", props.event?.startDate)
+
+const state = props.type === 'update' && props.event ? reactive({
+    title: props.event.title,
+    description: props.event.description,
+    venue: props.event.venue,
+    startDate: formatDateForInput(props.event.startDate),
+    endDate: formatDateForInput(props.event.endDate),
+    price: Number(props.event.price),
+    totalTickets: props.event.totalTickets,
+}) : reactive({
     title: "",
     description: "",
     venue: "",
-    startDate: new Date().toISOString(),
-    endDate: new Date().toISOString(),
+    startDate: formatDateForInput(new Date()),
+    endDate: formatDateForInput(new Date()),
     price: 0,
     totalTickets: 0,
 })
@@ -40,17 +74,28 @@ async function onSubmit(event: FormSubmitEvent<typeof state>) {
         console.log("Start date must be before end date")
         return
     }
-    const result = await createEvent({
-        ...event.data,
-        organizerId: user.value?.id!
-    })
-    if (result) {
-        navigateTo('/')
+    if (mode.value === 'create') {
+        const result = await createEvent({
+            ...event.data,
+            organizerId: user.value?.id!
+        })
+        if (result) {
+            navigateTo('/')
+        } else {
+            console.log("Failed to create event")
+        }
     } else {
-        console.log("Failed to create event")
+        const result = await updateEvent(
+            props.event?.id!,
+            event.data
+        )
+        if (result) {
+            navigateTo('/')
+        } else {
+            console.log("Failed to update event")
+        }
     }
 }
-
 </script>
 
 <template>
@@ -76,6 +121,8 @@ async function onSubmit(event: FormSubmitEvent<typeof state>) {
         <UFormField label="totalTickets" name="totalTickets">
             <UInput v-model="state.totalTickets" type="number" />
         </UFormField>
-        <UButton type="submit">Create Event</UButton>
+        <UButton type="submit">
+            {{ mode === 'create' ? 'Create Event' : 'Update Event' }}
+        </UButton>
     </UForm>
 </template>
