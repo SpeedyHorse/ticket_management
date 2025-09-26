@@ -41,7 +41,7 @@ onMounted(async () => {
                 <p>Customer</p>
                 <CusDashboard />
             </div>
-            <OrgDashboard />
+            <!-- <OrgDashboard /> -->
         </div>
     </div>
 </template>

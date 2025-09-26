@@ -4,12 +4,12 @@
 
 ```mermaid
 sequenceDiagram
-    box darkblue Client
+    box skyblue Client
         participant Pages
         participant Composables
     end
 
-    box darkgreen Server
+    box lightgreen Server
         participant API
         participant DB
     end
