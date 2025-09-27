@@ -13,9 +13,9 @@ const props = defineProps({
 
 const selectedEvent = defineModel("selectedEvent")
 const phase = defineModel("phase")
+const loading = defineModel("loading")
 
 const events = ref<Event[]>([])
-const loading = ref(true)
 
 async function getEvents() {
     events.value = []
@@ -39,6 +39,13 @@ async function getEvents() {
 onMounted(async () => {
     await getEvents()
     loading.value = false
+})
+
+watch(loading, async () => {
+    await getEvents()
+    setTimeout(() => {
+        loading.value = false
+    }, 3000);
 })
 
 const updateEvent = (event: Event) => {
@@ -78,16 +85,18 @@ const callDeleteEvent = async (id: string) => {
                         <span class="font-medium">Venue:</span> {{ event.venue }}
                     </p>
                 </div>
-                <button
-                    class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors font-medium"
-                    @click="() => updateEvent(event)">
-                    update
-                </button>
-                <button
-                    class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors font-medium"
-                    @click="() => callDeleteEvent(event.id)">
-                    delete
-                </button>
+                <div class="flex justify-end gap-x-2">
+                    <button
+                        class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-gray-600 transition-colors font-medium"
+                        @click.stop="() => updateEvent(event)">
+                        update
+                    </button>
+                    <button
+                        class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors font-medium"
+                        @click.stop="() => callDeleteEvent(event.id)">
+                        delete
+                    </button>
+                </div>
             </div>
         </div>
     </div>

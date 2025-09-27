@@ -7,17 +7,26 @@ const { getUser } = useUser()
 
 const user = ref<User | null>(null)
 const events = ref<Event[] | null>([])
-const loading = ref(false)
+
+const getEventSleep = ref(false)
 
 async function getEvents() {
+    getEventSleep.value = true
     loading.value = true
 }
+
 
 // 1: Dashboard
 // 2: Create Event
 // 3: Update Event
 const selectedEvent = defineModel("selectedEvent")
 const phase = defineModel("phase")
+const loading = defineModel("loading")
+
+watch(loading, () => {
+    getEventSleep.value = false
+    console.log("getEventSleep", getEventSleep.value)
+}, { immediate: true })
 
 onMounted(async () => {
     user.value = await getUser()
@@ -51,13 +60,15 @@ const createEvent = () => {
                             v-if="user" 
                             @click="() => getEvents()"
                             class="px-6 py-3 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors font-medium"
+                            :class="{'opacity-50': getEventSleep}"
+                            :disabled="getEventSleep"
                         >
                             Get Events
                         </button>
                     </div>
                 </div>
 
-                <EventList :organizerId="user?.id" v-model:phase="phase" v-model:selectedEvent="selectedEvent" />
+                <EventList :organizerId="user?.id" v-model:phase="phase" v-model:selectedEvent="selectedEvent" v-model:loading="loading" />
             </div>
 
             <!-- Phase 2: Create Event -->
@@ -72,7 +83,7 @@ const createEvent = () => {
                             ← Back to Dashboard
                         </button>
                     </div>
-                    <EventForm v-model="selectedEvent" type="create" />
+                    <EventForm type="create" />
                 </div>
             </div>
 
