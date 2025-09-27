@@ -15,26 +15,25 @@ const selectedEvent = defineModel("selectedEvent")
 const phase = defineModel("phase")
 const loading = defineModel("loading")
 
-const events = ref<Event[]>([])
+// const events = ref<Event[]>([])
 
 async function getEvents() {
-    events.value = []
+    const outputs: Event[] = []
     if (props.organizerId) {
         const organizerEvents = await getEventsByOrganizerId(props.organizerId)
         if (organizerEvents.length > 0) {
-            events.value = JSON.parse(JSON.stringify(organizerEvents))
-        } else {
-            events.value = []
+            outputs.push(...JSON.parse(JSON.stringify(organizerEvents)))
         }
     } else {
         const allEvents = await getAllEvents()
         if (allEvents.length > 0) {
-            events.value = JSON.parse(JSON.stringify(allEvents))
-        } else {
-            events.value = []
+            outputs.push(...JSON.parse(JSON.stringify(allEvents)))
         }
     }
+    return outputs
 }
+
+const { data: events } = await useAsyncData('events', () => getEvents())
 
 onMounted(async () => {
     await getEvents()
@@ -51,6 +50,7 @@ watch(loading, async () => {
 const updateEvent = (event: Event) => {
     selectedEvent.value = event
     phase.value = 3
+    console.log("selectedEvent", selectedEvent.value)
 }
 
 const callDeleteEvent = async (id: string) => {

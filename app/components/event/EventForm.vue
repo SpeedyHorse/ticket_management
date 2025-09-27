@@ -4,9 +4,10 @@ import type { FormSubmitEvent } from '@nuxt/ui';
 import type { User, Event as EventType } from "@prisma/client";
 
 interface Props {
-    event?: EventType | null
     type: 'create' | 'update'
 }
+
+const selectedEvent = defineModel<EventType>("selectedEvent")
 
 const { getUser } = useUser()
 const { createEvent, updateEvent } = useEvent()
@@ -43,21 +44,19 @@ const schema = Joi.object({
 const props = withDefaults(
     defineProps<Props>(),
     {
-        event: null,
+        selectedEvent: null,
         type: 'create'
     }
 )
 
-console.log("props", props.event?.startDate)
-
-const state = props.type === 'update' && props.event ? reactive({
-    title: props.event.title,
-    description: props.event.description,
-    venue: props.event.venue,
-    startDate: formatDateForInput(props.event.startDate),
-    endDate: formatDateForInput(props.event.endDate),
-    price: Number(props.event.price),
-    totalTickets: props.event.totalTickets,
+const state = props.type === 'update' && selectedEvent.value ? reactive({
+    title: selectedEvent.value.title,
+    description: selectedEvent.value.description,
+    venue: selectedEvent.value.venue,
+    startDate: formatDateForInput(selectedEvent.value.startDate),
+    endDate: formatDateForInput(selectedEvent.value.endDate),
+    price: Number(selectedEvent.value.price),
+    totalTickets: selectedEvent.value.totalTickets,
 }) : reactive({
     title: "",
     description: "",
@@ -86,7 +85,7 @@ async function onSubmit(event: FormSubmitEvent<typeof state>) {
         }
     } else {
         const result = await updateEvent(
-            props.event?.id!,
+            selectedEvent.value?.id!,
             event.data
         )
         if (result) {

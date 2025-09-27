@@ -28,19 +28,23 @@
 
 <script setup lang="ts">
 import type { Event } from '@prisma/client';
+import { useRoute } from 'vue-router';
+
 
 const { getEvent } = useEvent()
 const route = useRoute()
 
 const error = ref<string | null>(null)
 const loading = ref<boolean>(true)
-const event = ref<Event | null>(null)
+// const event = ref<Event | null>(null)
 
 definePageMeta({
     validate: async (route) => {
         return typeof route.params.id == 'string';
     }
 })
+
+const { data: event } = await useAsyncData('event', () => getEvent(route.params.id as string))
 
 onMounted(async () => {
     if (route.params.id) {

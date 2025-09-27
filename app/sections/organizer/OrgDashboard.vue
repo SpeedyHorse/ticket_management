@@ -2,11 +2,9 @@
 import EventForm from "~/components/event/EventForm.vue";
 import type { User, Event } from "@prisma/client";
 
-const { getEventsByOrganizerId, deleteEvent } = useEvent()
 const { getUser } = useUser()
 
 const user = ref<User | null>(null)
-const events = ref<Event[] | null>([])
 
 const getEventSleep = ref(false)
 
@@ -19,9 +17,9 @@ async function getEvents() {
 // 1: Dashboard
 // 2: Create Event
 // 3: Update Event
-const selectedEvent = defineModel("selectedEvent")
-const phase = defineModel("phase")
-const loading = defineModel("loading")
+const selectedEvent = ref<Event | null>(null)
+const phase = ref(1)
+const loading = ref(false)
 
 watch(loading, () => {
     getEventSleep.value = false
@@ -35,7 +33,7 @@ onMounted(async () => {
 
 
 const createEvent = () => {
-    selectedEvent.value = undefined
+    selectedEvent.value = null
     phase.value = 2
 }
 
@@ -92,7 +90,7 @@ const createEvent = () => {
                 <div class="bg-white rounded-lg shadow-sm p-6">
                     <h1 class="text-3xl font-bold text-gray-900">Update Event</h1>
                 </div>
-                <EventForm v-model="selectedEvent" type="update" />
+                <EventForm v-model:selectedEvent="selectedEvent!" type="update" />
             </div>
         </div>
     </div>
